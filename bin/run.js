@@ -1,5 +1,4 @@
 var fs = require('fs');
-var child_process = require('child_process');
 
 module.exports = run = () => {
 	let currentWorkingDir = process.cwd();
@@ -12,8 +11,16 @@ module.exports = run = () => {
 	let lambdaConfigJson = JSON.parse(fs.readFileSync(`${currentWorkingDir}/lambda-config.json`));
 
 	// get the handler method.
-	let handlerFile = lambdaConfigJson.handlerFile ;
-	let handlerMethod = lambdaConfigJson.handlerMethod || 'main';
+	let handlerFile = lambdaConfigJson.handlerFile;
+	if(!handlerFile) {
+		console.error("Error: Missing handlerFile in lambda-config.json. Aborting.");
+		process.exit(1);
+	}
+	let handlerMethod = lambdaConfigJson.handlerMethod;
+	if(!handlerMethod) {
+		console.error("Error: Missing handlerMethod in lambda-config.json. Aborting.");
+		process.exit(1);
+	}
 	let handler = require(`${currentWorkingDir}/${handlerFile}`)[handlerMethod];
 
 	// read event.json
