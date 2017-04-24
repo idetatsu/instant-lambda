@@ -1,7 +1,8 @@
 {
   "name": "instant-lambda",
   "version": "0.0.1",
-  "description": "Tiny command tools to create, run, and deploy AWS Lambda functions.",
+  "private": true,
+  "description": "Tiny command line tool to create, run, and deploy AWS Lambda functions.",
   "preferGlobal": true,
   "bin": {
     "instant-lambda": "./global-cli/index.js",
