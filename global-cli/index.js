@@ -9,21 +9,22 @@ var run = require('../bin/run');
 var pack = require('../bin/pack');
 var deploy = require('../bin/deploy');
 
-var commands = argv._;
-if (commands.length === 0) {
+if (argv.length === 0) {
 	console.error(
 		'Usage: instalam create <function-name>'
 	);
 	process.exit(1);
 }
 
-if(commands.version) {
-	console.log('instant-lambda version: ' + require('./package.json').version);
+if(argv.version || argv.v) {
+	console.log('instant-lambda version: ' + require('../package.json').version);
 	process.exit();
 }
 
+var commands = argv._;
 switch(commands[0]) {
-	case 'create': {
+	case 'create':
+	case 'c': {
 		if(!commands[1]){
 			console.error(
 				'Error: Missing function name. \n' +
@@ -35,15 +36,18 @@ switch(commands[0]) {
 		create(commands[1]);
 		break;
 	}
-	case 'run': {
+	case 'run':
+	case 'r': {
 		run();
 		break;
 	}
-	case 'pack': {
+	case 'pack':
+	case 'p': {
 		pack();
 		break;
 	}
-	case 'deploy': {
+	case 'deploy':
+	case 'd': {
 		deploy();
 		break;
 	}
@@ -51,5 +55,6 @@ switch(commands[0]) {
 		console.error(
 			'Usage: instalam create <project-name>'
 		);
+		process.exit(1);
 	}
 }
