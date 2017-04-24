@@ -1,0 +1,14 @@
+{
+  "region": "us-west-1",
+  "role": "arn:aws:iam::XXXXXXXXXXXX:my/iam/role",
+  "description": "My AWS Lambda function.",
+  "handlerFile": "app",
+  "handlerMethod": "main",
+  "memorySize": "128",
+  "timeout": "3",
+  "environment:": {
+  	"variables": {
+
+  	}
+  }
+}

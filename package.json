@@ -1,0 +1,30 @@
+{
+  "name": "instant-lambda",
+  "version": "0.0.1",
+  "description": "Tiny command tools to create, run, and deploy AWS Lambda functions.",
+  "preferGlobal": true,
+  "bin": {
+    "instant-lambda": "./global-cli/index.js",
+    "instalam": "./global-cli/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idetatsu/instant-lambda.git"
+  },
+  "keywords": [
+    "AWS",
+    "Lambda"
+  ],
+  "author": "Tatsuro Ide",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/idetatsu/instant-lambda/issues"
+  },
+  "homepage": "https://github.com/idetatsu/instant-lambda#readme",
+  "dependencies": {
+    "minimist": "^1.2.0"
+  }
+}
