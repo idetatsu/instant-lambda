@@ -1,11 +1,11 @@
 {
-  "region": "us-west-1",
+  "runtime": "nodejs6.10",
   "role": "arn:aws:iam::XXXXXXXXXXXX:my/iam/role",
-  "description": "My AWS Lambda function.",
   "handlerFile": "app",
   "handlerMethod": "main",
-  "memorySize": "128",
+  "description": "My AWS Lambda function.",
   "timeout": "3",
+  "memorySize": "128",
   "environment:": {
   	"variables": {
 

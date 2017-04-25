@@ -2,7 +2,7 @@
 'use strict'
 
 var fs = require('fs')
-var argv = require('minimist')(process.argv.slice(2));
+const argv = require('minimist')(process.argv.slice(2));
 
 var create = require('../bin/create');
 var run = require('../bin/run');
@@ -21,11 +21,10 @@ if(argv.version || argv.v) {
 	process.exit();
 }
 
-var commands = argv._;
-switch(commands[0]) {
+switch(argv._[0]) {
 	case 'create':
 	case 'c': {
-		if(!commands[1]){
+		if(!argv._[1]){
 			console.error(
 				'Error: Missing function name. \n' +
 				'Usage: instalam create <function-name>'
@@ -33,7 +32,7 @@ switch(commands[0]) {
 			process.exit(1);
 		}
 
-		create(commands[1]);
+		create(argv._[1]);
 		break;
 	}
 	case 'run':
@@ -48,7 +47,11 @@ switch(commands[0]) {
 	}
 	case 'deploy':
 	case 'd': {
-		deploy();
+		const options = {
+			code: argv.code,
+			config: argv.config,
+		}
+		deploy(options);
 		break;
 	}
 	default: {
