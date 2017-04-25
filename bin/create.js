@@ -27,7 +27,7 @@ module.exports = create = (lambdaName) => {
 	fs.writeFileSync(`${lambdaDir}/deploy-config.json`, deployConfigJson);
 	
 	const eventJson = fs.readFileSync(`${templateDir}/event.json`);
-	fs.writeFileSync(`${lambdaDir}/event.js`, eventJson);
+	fs.writeFileSync(`${lambdaDir}/event.json`, eventJson);
 
 	const packageJson = {
 		name: lambdaName,
