@@ -1,6 +1,6 @@
 {
   "name": "instant-lambda",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Tiny command line tool to create, run, and deploy AWS Lambda functions.",
   "preferGlobal": true,
   "bin": {
@@ -27,6 +27,8 @@
   "dependencies": {
     "archiver": "^1.3.0",
     "aws-sdk": "^2.45.0",
+    "chalk": "^1.1.3",
+    "figlet": "^1.2.0",
     "fs-extra": "^2.1.2",
     "minimist": "^1.2.0"
   }

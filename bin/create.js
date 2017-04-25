@@ -1,17 +1,19 @@
 var fs = require('fs');
+var chalk = require('chalk');
 
 module.exports = create = (lambdaName) => {
-	console.log('Creating an AWS Lambda function...');
+	console.log(chalk.bold.blue('INFO')+'\tCreating an AWS Lambda function...');
 
 	const currentWorkingDir = process.cwd();
 
 	const lambdaDir = `${currentWorkingDir}/${lambdaName}`;
 	if(fs.existsSync(lambdaDir)) {
-		console.error('Error: Lambda already exits. Aborting.');
+		console.error(chalk.bold.red('ERROR') + '\tDirectory already exits. Aborting.');
 		process.exit(1);
 	}
 	fs.mkdirSync(lambdaDir);
 	
+	console.log(chalk.bold.blue('INFO')+'\tCopying template files...');
 	const templateDir = `${__dirname}/../template`;
 
 	const appjs = fs.readFileSync(`${templateDir}/app.js`);
@@ -35,4 +37,5 @@ module.exports = create = (lambdaName) => {
 		private: true,
 	};
 	fs.writeFileSync(`${lambdaDir}/package.json`, JSON.stringify(packageJson, null, 2));
+	console.log(chalk.bold.blue('INFO')+'\tYour Lambda has been created at '+chalk.bold(lambdaName)+'!');
 };

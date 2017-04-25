@@ -1,4 +1,5 @@
 var aws = require('aws-sdk');
+var chalk = require('chalk');
 var fs = require('fs');
 
 module.exports = deploy = (options) => {
@@ -6,21 +7,21 @@ module.exports = deploy = (options) => {
 	const packageJsonPath = `${currentWorkingDir}/package.json`;
 
 	if(!fs.existsSync(packageJsonPath)) {
-		console.error('Error: Missing package.json. Aborting.');
+		console.error(chalk.bold.red('ERROR')+':\tMissing package.json. Aborting.');
 		process.exit(1);
 	}
 	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath));
 	
 	const lambdaConfigJsonPath = `${currentWorkingDir}/lambda-config.json`;
 	if(!fs.existsSync(lambdaConfigJsonPath)) {
-		console.error('Error: Missing lambda-config.json. Aborting.');
+		console.error(chalk.bold.red('ERROR')+':\tMissing lambda-config.json. Aborting.');
 		process.exit(1);
 	}
 	const lambdaConfigJson = JSON.parse(fs.readFileSync(lambdaConfigJsonPath));
 
 	const deployConfigJsonPath = `${currentWorkingDir}/deploy-config.json`;
 	if(!fs.existsSync(deployConfigJsonPath)) {
-		console.error('Error: Missing deploy-config.json. Aborting.');
+		console.error(chalk.bold.red('ERROR')+':\tMissing deploy-config.json. Aborting.');
 		process.exit(1);
 	}
 	const deployConfigJson = JSON.parse(fs.readFileSync(deployConfigJsonPath));
@@ -28,7 +29,7 @@ module.exports = deploy = (options) => {
 	const packagePath = `${currentWorkingDir}/package/${packageJson.name}.zip`;
 	if(!fs.existsSync(packagePath)) {
 		console.error(
-			'Error: Could not locate the package. \n' +
+			chalk.bold.red('ERROR')+':\tCould not locate the package. \n' +
 			'Please run \n\n' +
 			'\t instant-lambda pack \n\n' +
 			'to create a package to deploy.'
@@ -87,9 +88,9 @@ getParamsToCreateFunction = (lambdaConfig, zipFile) => {
 displayResult = (err, data) => {
 	if (err) {
 		if(err.code == 'CredentialsError'){
-			console.error('Error: ' + err.message);
+			console.error(chalk.bold.red('ERROR')+'\t' + err.message);
 		}else if(err.code == 'ValidationException'){
-			console.error('Error: ' + err.message);
+			console.error(chalk.bold.red('ERROR')+'\t' + err.message);
 		}else{
 			console.log(err);
 		}

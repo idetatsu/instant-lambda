@@ -1,3 +1,4 @@
+var chalk = require('chalk');
 var fs = require('fs');
 
 module.exports = run = () => {
@@ -5,7 +6,7 @@ module.exports = run = () => {
 	const lambdaConfigJsonPath = `${currentWorkingDir}/lambda-config.json`;
 	// read lambda-config.json
 	if(!fs.existsSync(lambdaConfigJsonPath)) {
-		console.error('Error: Missing lambda-config.json. Aborting.');
+		console.error(chalk.bold.red('ERROR')+':\tMissing lambda-config.json. Aborting.');
 		process.exit(1);
 	}
 	const lambdaConfigJson = JSON.parse(fs.readFileSync(lambdaConfigJsonPath));
@@ -13,12 +14,12 @@ module.exports = run = () => {
 	// get the handler method.
 	const handlerFile = lambdaConfigJson.handlerFile;
 	if(!handlerFile) {
-		console.error("Error: Missing handlerFile in lambda-config.json. Aborting.");
+		console.error(chalk.bold.red('ERROR')+':\tMissing handlerFile in lambda-config.json. Aborting.');
 		process.exit(1);
 	}
 	const handlerMethod = lambdaConfigJson.handlerMethod;
 	if(!handlerMethod) {
-		console.error("Error: Missing handlerMethod in lambda-config.json. Aborting.");
+		console.error(chalk.bold.red('ERROR')+':\tMissing handlerMethod in lambda-config.json. Aborting.');
 		process.exit(1);
 	}
 	const handler = require(`${currentWorkingDir}/${handlerFile}`)[handlerMethod];
