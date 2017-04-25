@@ -11,11 +11,11 @@ var run = require('../bin/run');
 var pack = require('../bin/pack');
 var deploy = require('../bin/deploy');
 
-var helptext = 	'Usage: instalam [--version] [--help] \n' +
-    '\tcreate <function-name> \n' +
-    '\trun \n' +
-    '\tpack \n' +
-    '\tdeploy \n';
+var helptext = chalk.cyan('Usage')+' instalam [--version] [--help]\n' +
+    			'\tcreate <function-name> \n' +
+    			'\trun \n' +
+    			'\tpack \n' +
+    			'\tdeploy [--code] [--config]\n';
 
 if (argv.length === 0) {
 	console.error(helptext);
@@ -31,7 +31,7 @@ switch(argv._[0]) {
 	case 'create':
 	case 'c': {
 		if(!argv._[1]){
-			console.error(chalk.bold.red('ERROR') + ':\tMissing function name.\n' + helptext);
+			console.error(chalk.bold.red('ERROR') + '\tMissing function name.\n' + helptext);
 			process.exit(1);
 		}
 
