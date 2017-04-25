@@ -24,7 +24,7 @@ if (argv.length === 0) {
 
 if(argv.version || argv.v) {
 	console.log('instant-lambda version: ' + require('../package.json').version);
-	process.exit();
+	process.exit(1);
 }
 
 switch(argv._[0]) {

@@ -1,5 +1,6 @@
 var aws = require('aws-sdk');
 var chalk = require('chalk');
+var instalamUtil = require('./instant-lambda-util');
 var fs = require('fs');
 
 module.exports = deploy = (options) => {
@@ -7,32 +8,32 @@ module.exports = deploy = (options) => {
 	const packageJsonPath = `${currentWorkingDir}/package.json`;
 
 	if(!fs.existsSync(packageJsonPath)) {
-		console.error(chalk.bold.red('ERROR')+':\tMissing package.json. Aborting.');
+		instalamUtil.putError('Missing package.json. Aborting.');
 		process.exit(1);
 	}
 	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath));
 	
 	const lambdaConfigJsonPath = `${currentWorkingDir}/lambda-config.json`;
 	if(!fs.existsSync(lambdaConfigJsonPath)) {
-		console.error(chalk.bold.red('ERROR')+':\tMissing lambda-config.json. Aborting.');
+		instalamUtil.putError('Missing lambda-config.json. Aborting.');
 		process.exit(1);
 	}
 	const lambdaConfigJson = JSON.parse(fs.readFileSync(lambdaConfigJsonPath));
 
 	const deployConfigJsonPath = `${currentWorkingDir}/deploy-config.json`;
 	if(!fs.existsSync(deployConfigJsonPath)) {
-		console.error(chalk.bold.red('ERROR')+':\tMissing deploy-config.json. Aborting.');
+		instalamUtil.putError('Missing deploy-config.json. Aborting.');
 		process.exit(1);
 	}
 	const deployConfigJson = JSON.parse(fs.readFileSync(deployConfigJsonPath));
 	
 	const packagePath = `${currentWorkingDir}/package/${packageJson.name}.zip`;
 	if(!fs.existsSync(packagePath)) {
-		console.error(
-			chalk.bold.red('ERROR')+':\tCould not locate the package. \n' +
-			'Please run \n\n' +
-			'\t instant-lambda pack \n\n' +
-			'to create a package to deploy.'
+		instalamUtil.putError(
+			'Could not locate the package. \n' +
+			'\tPlease run ' +
+			chalk.bold.yellow('instant-lambda pack')+
+			' to create a package to deploy.'
 		);
 		process.exit(1);
 	}
@@ -88,9 +89,9 @@ getParamsToCreateFunction = (lambdaConfig, zipFile) => {
 displayResult = (err, data) => {
 	if (err) {
 		if(err.code == 'CredentialsError'){
-			console.error(chalk.bold.red('ERROR')+'\t' + err.message);
+			instalamUtil.putError(err.message);
 		}else if(err.code == 'ValidationException'){
-			console.error(chalk.bold.red('ERROR')+'\t' + err.message);
+			instalamUtil.putError(err.message);
 		}else{
 			console.log(err);
 		}

@@ -1,14 +1,15 @@
 var fs = require('fs');
 var chalk = require('chalk');
+var instalamUtil = require('./instant-lambda-util');
 
 module.exports = create = (lambdaName) => {
-	console.log(chalk.bold.blue('INFO')+'\tCreating an AWS Lambda function...');
+	instalamUtil.putInfo('Creating an AWS Lambda function...');
 
 	const currentWorkingDir = process.cwd();
 
 	const lambdaDir = `${currentWorkingDir}/${lambdaName}`;
 	if(fs.existsSync(lambdaDir)) {
-		console.error(chalk.bold.red('ERROR') + '\tDirectory already exits. Aborting.');
+		instalamUtil.putError('Directory already exits. Aborting.');
 		process.exit(1);
 	}
 	fs.mkdirSync(lambdaDir);
@@ -37,5 +38,5 @@ module.exports = create = (lambdaName) => {
 		private: true,
 	};
 	fs.writeFileSync(`${lambdaDir}/package.json`, JSON.stringify(packageJson, null, 2));
-	console.log(chalk.bold.blue('INFO')+'\tYour Lambda has been created at '+chalk.bold(lambdaName)+'!');
+	instalamUtil.putInfo('Your Lambda has been created at '+chalk.bold(lambdaName)+'!');
 };
