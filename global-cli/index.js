@@ -9,10 +9,14 @@ var run = require('../bin/run');
 var pack = require('../bin/pack');
 var deploy = require('../bin/deploy');
 
+var helptext = "Usage: instalam [--version] [--help] \n" +
+    "\tcreate <function-name> \n" +
+    "\trun \n" +
+    "\tpack \n" +
+    "\tdeploy \n";
+
 if (argv.length === 0) {
-	console.error(
-		'Usage: instalam create <function-name>'
-	);
+	console.error(helptext);
 	process.exit(1);
 }
 
@@ -26,8 +30,7 @@ switch(argv._[0]) {
 	case 'c': {
 		if(!argv._[1]){
 			console.error(
-				'Error: Missing function name. \n' +
-				'Usage: instalam create <function-name>'
+				'Error: Missing function name. \n' + helptext
 			);
 			process.exit(1);
 		}
@@ -55,9 +58,7 @@ switch(argv._[0]) {
 		break;
 	}
 	default: {
-		console.error(
-			'Usage: instalam create <project-name>'
-		);
+		console.error(helptext);
 		process.exit(1);
 	}
 }
