@@ -74,7 +74,13 @@ Packages necessary files and all the dependencies in a zip file.
 ```
 $ instalam deploy
 ```
-Uploads your packaged Lambda function to AWS. You need to run ```instalam pack``` before deploying.
+Uploads your packaged Lambda function to AWS. You need to run ```instalam pack``` before deploying.  
+_Currently instant-lambda does not automatically retrieve your authentication credentials. Before running this command, you need to set your AWS credentials as environmental variables._  
+To set your authentication credentials, you can do something like
+```
+$ export AWS_ACCESS_KEY_ID='XXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+$ export AWS_SECRET_ACCESS_KEY='XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+```
 
 ## Test
 Currently not configured.
