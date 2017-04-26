@@ -1,3 +1,3 @@
 exports.main = (event, context, callback) => {
-	console.log("Hello, world!");
+	console.log('Hello, world!');
 };
