@@ -1,38 +1,40 @@
-var aws = require('aws-sdk');
-var chalk = require('chalk');
-var fs = require('fs');
+const aws = require('aws-sdk');
+const chalk = require('chalk');
+const instalamUtil = require('./instant-lambda-util');
+const fs = require('fs');
 
-module.exports = deploy = (options) => {
+module.exports = deploy;
+function deploy(options) {
 	const currentWorkingDir = process.cwd();
 	const packageJsonPath = `${currentWorkingDir}/package.json`;
 
 	if(!fs.existsSync(packageJsonPath)) {
-		console.error(chalk.bold.red('ERROR')+':\tMissing package.json. Aborting.');
+		instalamUtil.putError('Missing package.json. Aborting.');
 		process.exit(1);
 	}
 	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath));
-	
+
 	const lambdaConfigJsonPath = `${currentWorkingDir}/lambda-config.json`;
 	if(!fs.existsSync(lambdaConfigJsonPath)) {
-		console.error(chalk.bold.red('ERROR')+':\tMissing lambda-config.json. Aborting.');
+		instalamUtil.putError('Missing lambda-config.json. Aborting.');
 		process.exit(1);
 	}
 	const lambdaConfigJson = JSON.parse(fs.readFileSync(lambdaConfigJsonPath));
 
 	const deployConfigJsonPath = `${currentWorkingDir}/deploy-config.json`;
 	if(!fs.existsSync(deployConfigJsonPath)) {
-		console.error(chalk.bold.red('ERROR')+':\tMissing deploy-config.json. Aborting.');
+		instalamUtil.putError('Missing deploy-config.json. Aborting.');
 		process.exit(1);
 	}
 	const deployConfigJson = JSON.parse(fs.readFileSync(deployConfigJsonPath));
-	
+
 	const packagePath = `${currentWorkingDir}/package/${packageJson.name}.zip`;
 	if(!fs.existsSync(packagePath)) {
-		console.error(
-			chalk.bold.red('ERROR')+':\tCould not locate the package. \n' +
-			'Please run \n\n' +
-			'\t instant-lambda pack \n\n' +
-			'to create a package to deploy.'
+		instalamUtil.putError(
+			'Could not locate the package. \n' +
+			'\tPlease run ' +
+			chalk.bold.yellow('instant-lambda pack')+
+			' to create a package to deploy.'
 		);
 		process.exit(1);
 	}
@@ -44,7 +46,7 @@ module.exports = deploy = (options) => {
 		const isOptionEmpty = !options.code && !options.config;
 		if(options.code || isOptionEmpty) {
 			let params = getParamsToUpdateCode(lambdaConfigJson, packageZip);
-			Lambda.updateFunctionCode(params, displayResult);	
+			Lambda.updateFunctionCode(params, displayResult);
 		}
 		if(options.config || isOptionEmpty) {
 			let params = getParamsToUpdateConfig(lambdaConfigJson);
@@ -55,16 +57,16 @@ module.exports = deploy = (options) => {
 		let params = getParamsToCreateFunction(lambdaConfigJson, packageZip);
 		Lambda.createFunction(params, displayResult);
 	});
-};
+}
 
-getParamsToUpdateCode = (lambdaConfig, zipFile) => {
+function getParamsToUpdateCode(lambdaConfig, zipFile) {
 	return {
 		ZipFile: zipFile,
 		FunctionName: lambdaConfig.functionName,
-	}
-}
+	};
+};
 
-getParamsToUpdateConfig = (lambdaConfig) => {
+function getParamsToUpdateConfig(lambdaConfig) {
 	return {
 		FunctionName: lambdaConfig.functionName,
 		Runtime: lambdaConfig.runtime,
@@ -74,39 +76,39 @@ getParamsToUpdateConfig = (lambdaConfig) => {
 		MemorySize: lambdaConfig.memorySize,
 		Timeout: lambdaConfig.timeout,
 		Environment: lambdaConfig.environment,
-	}
-}
+	};
+};
 
-getParamsToCreateFunction = (lambdaConfig, zipFile) => {
+function getParamsToCreateFunction(lambdaConfig, zipFile) {
 	let params = getParamsToUpdateConfig(lambdaConfig);
 	params['Code'] = {
-		ZipFile: zipFile
+		ZipFile: zipFile,
 	};
 	return params;
-}
+};
 
-displayResult = (err, data) => {
+function displayResult(err, data) {
 	if (err) {
-		if(err.code == 'CredentialsError'){
-			console.error(chalk.bold.red('ERROR')+'\t' + err.message);
-		}else if(err.code == 'ValidationException'){
-			console.error(chalk.bold.red('ERROR')+'\t' + err.message);
+		if(err.code == 'CredentialsError') {
+			instalamUtil.putError('CredentialsError'+err.message);
+		}else if(err.code == 'ValidationException') {
+			instalamUtil.putError('ValidationException'+err.message);
 		}else{
-			console.log(err);
+			instalamUtil.putError(err);
 		}
 	}else {
-    	console.log(data);
+		instalamUtil.putInfo(data);
 	}
-}
+};
 
-lambdaExists = (functionName, region) => {
-  	return new Promise((resolve, reject) => {
+function lambdaExists(functionName, region) {
+	return new Promise((resolve, reject) => {
 		let Lambda = new aws.Lambda({region: region});
-    	let getFunction = Lambda.getFunction({ FunctionName: functionName }).promise();
-    	getFunction.then(
-    		resolve
-    	).catch(
-    		reject
-    	);
-  	});
+		let getFunction = Lambda.getFunction({FunctionName: functionName}).promise();
+		getFunction.then(
+			resolve
+		).catch(
+			reject
+		);
+	});
 };
