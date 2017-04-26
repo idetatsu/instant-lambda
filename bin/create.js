@@ -4,40 +4,58 @@ const instalamUtil = require('./instant-lambda-util');
 
 module.exports = create;
 function create(lambdaName) {
+	if(!isLambdaNameValid(lambdaName)) {
+		instalamUtil.putError('Invalid Lambda name. Aborting.');
+		process.exit(1);
+	}
+
 	instalamUtil.putInfo('Creating an AWS Lambda function...');
 
-	const currentWorkingDir = process.cwd();
-
-	const lambdaDir = `${currentWorkingDir}/${lambdaName}`;
+	const lambdaDir = `${process.cwd()}/${lambdaName}`;
 	if(fs.existsSync(lambdaDir)) {
-		instalamUtil.putError('Directory already exits. Aborting.');
+		instalamUtil.putError('Directory already exists. Aborting.');
 		process.exit(1);
 	}
 	fs.mkdirSync(lambdaDir);
 
 	instalamUtil.putInfo('Copying template files...');
+
+	copyFromTemplateDirToLambdaDir('app.js', lambdaName);
+	copyFromTemplateDirToLambdaDir('deploy-config.json', lambdaName);
+	copyFromTemplateDirToLambdaDir('event.json', lambdaName);
+	createLambdaConfig(lambdaName);
+	createPackageJson(lambdaName);
+
+	instalamUtil.putInfo('Your Lambda has been created at '+chalk.bold(lambdaName)+'!');
+}
+
+function copyFromTemplateDirToLambdaDir(filename, lambdaName) {
 	const templateDir = `${__dirname}/../template`;
+	const lambdaDir = `${process.cwd()}/${lambdaName}`;
 
-	const appjs = fs.readFileSync(`${templateDir}/app.js`);
-	fs.writeFileSync(`${lambdaDir}/app.js`, appjs);
+	const file = fs.readFileSync(`${templateDir}/${filename}`);
+	fs.writeFileSync(`${lambdaDir}/${filename}`, file);
+}
 
-	const lambdaConfig = fs.readFileSync(`${templateDir}/lambda-config.json`);
-	let lambdaConfigJson = JSON.parse(lambdaConfig);
-	lambdaConfigJson['functionName'] = lambdaName;
-	fs.writeFileSync(`${lambdaDir}/lambda-config.json`, JSON.stringify(lambdaConfigJson, null, 2));
+function createLambdaConfig(lambdaName) {
+	const templateDir = `${__dirname}/../template`;
+	const lambdaDir = `${process.cwd()}/${lambdaName}`;
 
-	const deployConfigJson = fs.readFileSync(`${templateDir}/deploy-config.json`);
-	fs.writeFileSync(`${lambdaDir}/deploy-config.json`, deployConfigJson);
+	let lambdaConfig = JSON.parse(fs.readFileSync(`${templateDir}/lambda-config.json`));
+	lambdaConfig['functionName'] = lambdaName;
+	fs.writeFileSync(`${lambdaDir}/lambda-config.json`, JSON.stringify(lambdaConfig, null, 2));
+}
 
-	const eventJson = fs.readFileSync(`${templateDir}/event.json`);
-	fs.writeFileSync(`${lambdaDir}/event.json`, eventJson);
-
+function createPackageJson(lambdaName) {
+	const lambdaDir = `${process.cwd()}/${lambdaName}`;
 	const packageJson = {
 		name: lambdaName,
 		version: '0.0.1',
 		private: true,
 	};
-	fs.writeFileSync(`${lambdaDir}/package.json`,
-		JSON.stringify(packageJson, null, 2));
-	instalamUtil.putInfo('Your Lambda has been created at '+chalk.bold(lambdaName)+'!');
-};
+	fs.writeFileSync(`${lambdaDir}/package.json`, JSON.stringify(packageJson, null, 2));
+}
+
+function isLambdaNameValid(lambdaName) {
+	return true;
+}

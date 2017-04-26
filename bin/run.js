@@ -15,14 +15,12 @@ function run() {
 	// get the handler method.
 	const handlerFile = lambdaConfigJson.handlerFile;
 	if(!handlerFile) {
-		instalamUtil.putError(
-			'Missing handlerFile in lambda-config.json. Aborting.');
+		instalamUtil.putError('Missing handlerFile in lambda-config.json. Aborting.');
 		process.exit(1);
 	}
 	const handlerMethod = lambdaConfigJson.handlerMethod;
 	if(!handlerMethod) {
-		instalamUtil.putError(
-			'Missing handlerMethod in lambda-config.json. Aborting.');
+		instalamUtil.putError('Missing handlerMethod in lambda-config.json. Aborting.');
 		process.exit(1);
 	}
 	const handler = getHandler(currentWorkingDir, handlerFile, handlerMethod);
@@ -35,14 +33,14 @@ function run() {
 	}
 
 	runHandler(handler, event);
-};
+}
 
 function runHandler(handler, event) {
 	let callback = () => {};
 	let context = {};
 	handler(event, context, callback);
-};
+}
 
 function getHandler(workingDir, handlerFile, handlerMethod) {
 	return require(`${workingDir}/${handlerFile}`)[handlerMethod];
-};
+}

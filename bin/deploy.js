@@ -6,8 +6,8 @@ const fs = require('fs');
 module.exports = deploy;
 function deploy(options) {
 	const currentWorkingDir = process.cwd();
-	const packageJsonPath = `${currentWorkingDir}/package.json`;
 
+	const packageJsonPath = `${currentWorkingDir}/package.json`;
 	if(!fs.existsSync(packageJsonPath)) {
 		instalamUtil.putError('Missing package.json. Aborting.');
 		process.exit(1);
@@ -40,21 +40,21 @@ function deploy(options) {
 	}
 	const packageZip = fs.readFileSync(packagePath);
 
-	let Lambda = new aws.Lambda({region: deployConfigJson.region});
+	const Lambda = new aws.Lambda({region: deployConfigJson.region});
 	lambdaExists(lambdaConfigJson.functionName, deployConfigJson.region).then( () => {
 		// update
 		const isOptionEmpty = !options.code && !options.config;
 		if(options.code || isOptionEmpty) {
-			let params = getParamsToUpdateCode(lambdaConfigJson, packageZip);
+			const params = getParamsToUpdateCode(lambdaConfigJson, packageZip);
 			Lambda.updateFunctionCode(params, displayResult);
 		}
 		if(options.config || isOptionEmpty) {
-			let params = getParamsToUpdateConfig(lambdaConfigJson);
+			const params = getParamsToUpdateConfig(lambdaConfigJson);
 			Lambda.updateFunctionConfiguration(params, displayResult);
 		}
 	}).catch( () => {
 		// create
-		let params = getParamsToCreateFunction(lambdaConfigJson, packageZip);
+		const params = getParamsToCreateFunction(lambdaConfigJson, packageZip);
 		Lambda.createFunction(params, displayResult);
 	});
 }
@@ -64,7 +64,7 @@ function getParamsToUpdateCode(lambdaConfig, zipFile) {
 		ZipFile: zipFile,
 		FunctionName: lambdaConfig.functionName,
 	};
-};
+}
 
 function getParamsToUpdateConfig(lambdaConfig) {
 	return {
@@ -77,7 +77,7 @@ function getParamsToUpdateConfig(lambdaConfig) {
 		Timeout: lambdaConfig.timeout,
 		Environment: lambdaConfig.environment,
 	};
-};
+}
 
 function getParamsToCreateFunction(lambdaConfig, zipFile) {
 	let params = getParamsToUpdateConfig(lambdaConfig);
@@ -85,7 +85,7 @@ function getParamsToCreateFunction(lambdaConfig, zipFile) {
 		ZipFile: zipFile,
 	};
 	return params;
-};
+}
 
 function displayResult(err, data) {
 	if (err) {
@@ -99,7 +99,7 @@ function displayResult(err, data) {
 	}else {
 		instalamUtil.putInfo(data);
 	}
-};
+}
 
 function lambdaExists(functionName, region) {
 	return new Promise((resolve, reject) => {
@@ -111,4 +111,4 @@ function lambdaExists(functionName, region) {
 			reject
 		);
 	});
-};
+}

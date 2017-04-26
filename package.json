@@ -9,7 +9,7 @@
   },
   "scripts": {
     "lint": "eslint ./",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -34,7 +34,10 @@
     "minimist": "^1.2.0"
   },
   "devDependencies": {
+    "assert": "^1.4.1",
+    "assert-fs": "^0.1.0",
     "eslint": "^3.19.0",
-    "eslint-config-google": "^0.7.1"
+    "eslint-config-google": "^0.7.1",
+    "mocha": "^3.3.0"
   }
 }

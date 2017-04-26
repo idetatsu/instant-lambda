@@ -3,6 +3,7 @@ const chalk = require('chalk');
 const instalamUtil = require('./instant-lambda-util');
 const archiver = require('archiver');
 
+module.exports = pack;
 function pack() {
 	instalamUtil.putInfo('Packaging your Lambda...');
 	const currentWorkingDir = process.cwd();
@@ -37,8 +38,8 @@ function pack() {
 	// prepare archiver
 	instalamUtil.putInfo('Archiving necessary files...');
 	const packageZipPath = `${packageDir}/${lambdaConfigJson.functionName}.zip`;
-	let output = fs.createWriteStream(packageZipPath);
-	let archive = archiver('zip');
+	const output = fs.createWriteStream(packageZipPath);
+	const archive = archiver('zip');
 	archive.on('error', (err) => {
 		instalamUtil.putError(err);
 		process.exit(1);
@@ -60,5 +61,4 @@ function pack() {
 	}
 
 	archive.finalize();
-};
-module.exports = pack;
+}
