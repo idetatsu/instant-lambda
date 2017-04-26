@@ -1,5 +1,5 @@
 # instant-lambda
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)  
+[![CircleCI](https://circleci.com/gh/idetatsu/instant-lambda/tree/master.svg?style=shield)](https://circleci.com/gh/idetatsu/instant-lambda/tree/master) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)  
 Tiny command line tool to create, run, and deploy [AWS Lambda functions](https://aws.amazon.com/lambda/).
 
 ```
