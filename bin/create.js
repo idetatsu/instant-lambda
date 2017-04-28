@@ -4,11 +4,14 @@ const instalamUtil = require('./instant-lambda-util');
 
 module.exports = create;
 function create(lambdaName) {
-	if(!isLambdaNameValid(lambdaName)) {
+	if(isValidLambdaName(lambdaName) == null) {
 		instalamUtil.putError('Invalid Lambda name. Aborting.');
+		instalamUtil.putInfo(
+			'Lambda name needs to satisfy the following regular expression pattern.\n' +
+			'(arn:(aws|aws-us-gov):lambda:)?([a-z]{2}(-gov)?-[a-z]+-\d{1}:)?(\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\$LATEST|[a-zA-Z0-9-_]+))?'
+		);
 		process.exit(1);
 	}
-
 	instalamUtil.putInfo('Creating an AWS Lambda function...');
 
 	const lambdaDir = `${process.cwd()}/${lambdaName}`;
@@ -56,6 +59,7 @@ function createPackageJson(lambdaName) {
 	fs.writeFileSync(`${lambdaDir}/package.json`, JSON.stringify(packageJson, null, 2));
 }
 
-function isLambdaNameValid(lambdaName) {
-	return true;
+function isValidLambdaName(lambdaName) {
+	const lambdaNameRegex = /^(arn:(aws|aws-us-gov):lambda:)?([a-z]{2}(-gov)?-[a-z]+-\d{1}:)?(\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\$LATEST|[a-zA-Z0-9-_]+))?.$/
+	return lambdaName.match(lambdaNameRegex);
 }
