@@ -19,6 +19,7 @@ function run() {
 		process.exit(1);
 	}
 	const handlerMethod = lambdaConfigJson.handlerMethod;
+
 	if(!handlerMethod) {
 		instalamUtil.putError('Missing handlerMethod in lambda-config.json. Aborting.');
 		process.exit(1);
@@ -32,12 +33,32 @@ function run() {
 		event = JSON.parse(fs.readFileSync(eventJsonPath));
 	}
 
-	runHandler(handler, event);
+	const timeout = lambdaConfigJson.timeout;
+	runHandler(handler, event, timeout);
 }
 
-function runHandler(handler, event) {
-	let callback = () => {};
-	let context = {};
+function runHandler(handler, event, timeout) {
+	const startTime = new Date();
+	const timeoutInMillis = Math.min(timeout, 300) * 1000;
+
+	const callback = (err, result) => {
+		if(err) {
+			console.log('Error: ' + err);
+			process.exit(1);
+		}else {
+			console.log('Success: ');
+			if(result) {
+				console.log(JSON.stringify(result));
+			}
+			process.exit(0);
+		}
+	}
+	const context = {
+		getRemainingTimeInMillis: () => {
+			let currentTime = new Date();
+			return timeoutInMillis - (currentTime - startTime);
+		},
+	};
 	handler(event, context, callback);
 }
 
