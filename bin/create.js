@@ -26,6 +26,7 @@ function create(lambdaName) {
 	copyFromTemplateDirToLambdaDir('app.js', lambdaName);
 	copyFromTemplateDirToLambdaDir('deploy-config.json', lambdaName);
 	copyFromTemplateDirToLambdaDir('event.json', lambdaName);
+	copyFromTemplateDirToLambdaDir('.gitignore', lambdaName);
 	createLambdaConfig(lambdaName);
 	createPackageJson(lambdaName);
 
