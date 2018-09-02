@@ -28,7 +28,7 @@ function deploy(options) {
 	}
 	const deployConfigJson = JSON.parse(fs.readFileSync(deployConfigJsonPath));
 
-	const packagePath = `${currentWorkingDir}/package/${packageJson.name}.zip`;
+  const packagePath = `${currentWorkingDir}/package/${packageJson.name}.zip`;
 	if(!fs.existsSync(packagePath)) {
 		instalamUtil.putError(
 			'Could not locate the package. \n' +
@@ -40,6 +40,7 @@ function deploy(options) {
 	}
 	const packageZip = fs.readFileSync(packagePath);
 
+  setCredentials(deployConfigJson.profile);
 	const Lambda = new aws.Lambda({region: deployConfigJson.region});
 	lambdaExists(lambdaConfigJson.functionName, deployConfigJson.region).then( () => {
 		// update
@@ -75,7 +76,9 @@ function getParamsToUpdateConfig(lambdaConfig) {
 		Description: lambdaConfig.description,
 		MemorySize: lambdaConfig.memorySize,
 		Timeout: lambdaConfig.timeout,
-		Environment: lambdaConfig.environment,
+		Environment: {
+      Variables: lambdaConfig.environment.variables
+    },
 	};
 }
 
@@ -89,7 +92,7 @@ function getParamsToCreateFunction(lambdaConfig, zipFile) {
 
 function displayResult(err, data) {
 	if (err) {
-		if(err.code == 'CredentialsError') {
+		if(err.code == 'CreentialsError') {
 			instalamUtil.putError('CredentialsError'+err.message);
 		}else if(err.code == 'ValidationException') {
 			instalamUtil.putError('ValidationException'+err.message);
@@ -111,4 +114,9 @@ function lambdaExists(functionName, region) {
 			reject
 		);
 	});
+}
+
+function setCredentials(profile) {
+  let creds = new aws.SharedIniFileCredentials({profile: profile})
+  aws.config.credentials = creds;
 }

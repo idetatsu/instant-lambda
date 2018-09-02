@@ -6,9 +6,8 @@
   "description": "My AWS Lambda function.",
   "timeout": "3",
   "memorySize": "128",
-  "environment:": {
+  "environment": {
   	"variables": {
-
   	}
   }
 }

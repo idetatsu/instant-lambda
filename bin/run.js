@@ -12,6 +12,9 @@ function run() {
 	}
 	const lambdaConfigJson = JSON.parse(fs.readFileSync(lambdaConfigJsonPath));
 
+  // set environment variables
+  setEnvironmentVariablesFromConfig(lambdaConfigJson);
+
 	// get the handler method.
 	const handlerFile = lambdaConfigJson.handlerFile;
 	if(!handlerFile) {
@@ -64,4 +67,11 @@ function runHandler(handler, event, timeout) {
 
 function getHandler(workingDir, handlerFile, handlerMethod) {
 	return require(`${workingDir}/${handlerFile}`)[handlerMethod];
+}
+
+function setEnvironmentVariablesFromConfig(config) {
+  const environmentVariables = config.environment.variables;
+	for(let key in environmentVariables) {
+    process.env[key] = environmentVariables[key];
+  }
 }
