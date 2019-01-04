@@ -1,5 +1,5 @@
 # instant-lambda
-[![CircleCI](https://circleci.com/gh/idetatsu/instant-lambda/tree/master.svg?style=shield)](https://circleci.com/gh/idetatsu/instant-lambda/tree/master) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)  
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)  
 Tiny command line tool to create, run, and deploy [AWS Lambda functions](https://aws.amazon.com/lambda/).
 <img src="http://blog.theoroy.com/images/instant-lambda_screenshot.png" width="500"/>
 ```
@@ -75,7 +75,7 @@ Packages necessary files and all the dependencies in a zip file.
 $ instalam deploy
 ```
 Uploads your packaged Lambda function to AWS. You need to run ```instalam pack``` before deploying.  
-_Currently instant-lambda does not automatically retrieve your authentication credentials. Before running this command, you need to set your AWS credentials as environmental variables._  
+_Currently instant-lambda does not automatically retrieve your authentication credentials. Before running this command, you need to set your AWS credentials as environment variables._  
 To set your authentication credentials, you can do something like
 ```
 $ export AWS_ACCESS_KEY_ID='XXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
