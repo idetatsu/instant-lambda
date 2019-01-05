@@ -1,35 +1,41 @@
-const fs = require('fs');
-const chalk = require('chalk');
-const instalamUtil = require('./instant-lambda-util');
+const fs = require("fs");
+const chalk = require("chalk");
+const instalamUtil = require("./instant-lambda-util");
+
+const lambdaNameFormat =
+  "^(arn:(aws|aws-us-gov):lambda:)?([a-z]{2}(-gov)?-[a-z]+-d{1}:)" +
+  "?(d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:($LATEST|[a-zA-Z0-9-_]+))?.$";
 
 module.exports = create;
 function create(lambdaName) {
-	if(isValidLambdaName(lambdaName) == null) {
-		instalamUtil.putError('Invalid Lambda name. Aborting.');
+	if (isValidLambdaName(lambdaName) == null) {
+		instalamUtil.putError("Invalid Lambda name. Aborting.");
 		instalamUtil.putInfo(
-			'Lambda name needs to satisfy the following regular expression pattern.\n' +
-			'(arn:(aws|aws-us-gov):lambda:)?([a-z]{2}(-gov)?-[a-z]+-\d{1}:)?(\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\$LATEST|[a-zA-Z0-9-_]+))?'
-		);
+      "Lambda name needs to satisfy the following regular expression pattern.\n" +
+        lambdaNameFormat
+    );
 		process.exit(1);
 	}
-	instalamUtil.putInfo('Creating an AWS Lambda function...');
+	instalamUtil.putInfo("Creating an AWS Lambda function...");
 
 	const lambdaDir = `${process.cwd()}/${lambdaName}`;
-	if(fs.existsSync(lambdaDir)) {
-		instalamUtil.putError('Directory already exists. Aborting.');
+	if (fs.existsSync(lambdaDir)) {
+		instalamUtil.putError("Directory already exists. Aborting.");
 		process.exit(1);
 	}
 	fs.mkdirSync(lambdaDir);
 
-	instalamUtil.putInfo('Copying template files...');
+	instalamUtil.putInfo("Copying template files...");
 
-	copyFromTemplateDirToLambdaDir('app.js', lambdaName);
-	copyFromTemplateDirToLambdaDir('deploy-config.json', lambdaName);
-	copyFromTemplateDirToLambdaDir('event.json', lambdaName);
+	copyFromTemplateDirToLambdaDir("app.js", lambdaName);
+	copyFromTemplateDirToLambdaDir("deploy-config.json", lambdaName);
+	copyFromTemplateDirToLambdaDir("event.json", lambdaName);
 	createLambdaConfig(lambdaName);
 	createPackageJson(lambdaName);
 
-	instalamUtil.putInfo('Your Lambda has been created at '+chalk.bold(lambdaName)+'!');
+	instalamUtil.putInfo(
+    "Your Lambda has been created at " + chalk.bold(lambdaName) + "!"
+  );
 }
 
 function copyFromTemplateDirToLambdaDir(filename, lambdaName) {
@@ -44,22 +50,30 @@ function createLambdaConfig(lambdaName) {
 	const templateDir = `${__dirname}/../template`;
 	const lambdaDir = `${process.cwd()}/${lambdaName}`;
 
-	let lambdaConfig = JSON.parse(fs.readFileSync(`${templateDir}/lambda-config.json`));
-	lambdaConfig['functionName'] = lambdaName;
-	fs.writeFileSync(`${lambdaDir}/lambda-config.json`, JSON.stringify(lambdaConfig, null, 2));
+	let lambdaConfig = JSON.parse(
+    fs.readFileSync(`${templateDir}/lambda-config.json`)
+  );
+	lambdaConfig["functionName"] = lambdaName;
+	fs.writeFileSync(
+    `${lambdaDir}/lambda-config.json`,
+    JSON.stringify(lambdaConfig, null, 2)
+  );
 }
 
 function createPackageJson(lambdaName) {
 	const lambdaDir = `${process.cwd()}/${lambdaName}`;
 	const packageJson = {
 		name: lambdaName,
-		version: '0.0.1',
+		version: "0.0.1",
 		private: true,
 	};
-	fs.writeFileSync(`${lambdaDir}/package.json`, JSON.stringify(packageJson, null, 2));
+	fs.writeFileSync(
+    `${lambdaDir}/package.json`,
+    JSON.stringify(packageJson, null, 2)
+  );
 }
 
 function isValidLambdaName(lambdaName) {
-	const lambdaNameRegex = /^(arn:(aws|aws-us-gov):lambda:)?([a-z]{2}(-gov)?-[a-z]+-\d{1}:)?(\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\$LATEST|[a-zA-Z0-9-_]+))?.$/
+	const lambdaNameRegex = new RegExp(lambdaNameFormat);
 	return lambdaName.match(lambdaNameRegex);
 }
